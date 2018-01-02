@@ -3355,7 +3355,7 @@ export class Parser {
             while (!this.match('>')) {
                 if (this.match(',')) {
                     this.nextToken();
-                    this.parseIdentifierName();
+                    let identifier=this.parseIdentifierName();
                     generics.push(identifier)
                 }
             }
