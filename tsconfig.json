@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "module": "umd",
+      "jsx":"react",
+      "declaration": true,
+      "sourceMap": true,
+      "experimentalDecorators": true
+    }
+}

@@ -223,10 +223,12 @@ export class ClassDeclaration {
     readonly id: Identifier | null;
     readonly superClass: Identifier | null;
     readonly body: ClassBody;
-    constructor(id: Identifier | null, superClass: Identifier | null, body: ClassBody) {
+    readonly generics: Identifier[] | null;
+    constructor(id: Identifier | null, superClass: Identifier | null, generics: Identifier[] | null,body: ClassBody) {
         this.type = Syntax.ClassDeclaration;
         this.id = id;
         this.superClass = superClass;
+        this.generics = generics;
         this.body = body;
     }
 }

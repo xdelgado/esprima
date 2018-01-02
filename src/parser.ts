@@ -483,6 +483,10 @@ export class Parser {
     matchKeyword(keyword) {
         return this.lookahead.type === Token.Keyword && this.lookahead.value === keyword;
     }
+    
+    matchPunctuator(punctuator) {
+        return this.lookahead.type === Token.Punctuator && this.lookahead.value === punctuator;
+    }
 
     // Return true if the next token matches the specified contextual keyword
     // (where an identifier is sometimes a keyword depending on the context)
@@ -3310,7 +3314,6 @@ export class Parser {
     parseClassElementList(): Node.Property[] {
         const body: Node.Property[] = [];
         const hasConstructor = { value: false };
-
         this.expect('{');
         while (!this.match('}')) {
             if (this.match(';')) {
@@ -3320,7 +3323,6 @@ export class Parser {
             }
         }
         this.expect('}');
-
         return body;
     }
 
@@ -3344,10 +3346,26 @@ export class Parser {
             this.nextToken();
             superClass = this.isolateCoverGrammar(this.parseLeftHandSideExpressionAllowCall);
         }
+        let generics:Node.Identifier[] | null =null;
+        if (this.matchPunctuator('<')){
+            generics=[];
+            this.nextToken();
+            let identifier=this.parseIdentifierName();
+            generics.push(identifier);
+            while (!this.match('>')) {
+                if (this.match(',')) {
+                    this.nextToken();
+                    this.parseIdentifierName();
+                    generics.push(identifier)
+                }
+            }
+            this.expect('>');
+        }
+
         const classBody = this.parseClassBody();
         this.context.strict = previousStrict;
 
-        return this.finalize(node, new Node.ClassDeclaration(id, superClass, classBody));
+        return this.finalize(node, new Node.ClassDeclaration(id, superClass, generics, classBody));
     }
 
     parseClassExpression(): Node.ClassExpression {
